@@ -391,7 +391,10 @@ export default function DesktopTimelineView({
                     );
                   }
                 }}
-                doubleClickHandler={() => setSelectedPlayback(timeline)}
+                doubleClickHandler={() => {
+                  setScrubbing(false);
+                  setSelectedPlayback(timeline);
+                }}
               />
               {isSelected && graphData && (
                 <div className="absolute left-2 right-2 top-0 h-[84px]">
