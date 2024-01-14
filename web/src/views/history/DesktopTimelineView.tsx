@@ -36,6 +36,7 @@ export default function DesktopTimelineView({
 
   const playerRef = useRef<Player | undefined>(undefined);
   const previewRef = useRef<Player | undefined>(undefined);
+  const initialScrollRef = useRef<HTMLDivElement | null>(null);
 
   const [scrubbing, setScrubbing] = useState(false);
   const [focusedItem, setFocusedItem] = useState<Timeline | undefined>(
@@ -119,6 +120,13 @@ export default function DesktopTimelineView({
     },
     [annotationOffset, recordings, playerRef]
   );
+
+  // handle scrolling to initial timeline item
+  useEffect(() => {
+    if (initialScrollRef.current != null) {
+      initialScrollRef.current.scrollIntoView();
+    }
+  }, [initialScrollRef]);
 
   // handle seeking to next frame when seek is finished
   useEffect(() => {
@@ -320,12 +328,15 @@ export default function DesktopTimelineView({
       </div>
       <div className="m-1 w-full max-h-72 2xl:max-h-80 3xl:max-h-96 overflow-auto">
         {timelineStack.playbackItems.map((timeline) => {
+          const isInitiallySelected =
+            initialPlayback.range.start == timeline.range.start;
           const isSelected =
             timeline.range.start == selectedPlayback.range.start;
           const graphData = timelineGraphData[timeline.range.start];
 
           return (
             <div
+              ref={isInitiallySelected ? initialScrollRef : null}
               key={timeline.range.start}
               className={`relative p-2 ${
                 isSelected ? "bg-secondary bg-opacity-30 rounded-md" : ""
