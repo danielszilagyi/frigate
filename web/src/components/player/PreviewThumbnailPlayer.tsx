@@ -195,22 +195,13 @@ function PreviewContent({
 
   if (relevantPreview && !isVisible) {
     return <div />;
-  } else if (!relevantPreview) {
-    if (isCurrentHour(startTs)) {
-      return (
-        <img
-          className={`${getPreviewWidth(camera, config)}`}
-          src={`${apiHost}api/preview/${camera}/${startTs}/thumbnail.jpg`}
-        />
-      );
-    } else {
-      return (
-        <img
-          className="w-[160px]"
-          src={`${apiHost}api/events/${eventId}/thumbnail.jpg`}
-        />
-      );
-    }
+  } else if (!relevantPreview && !isCurrentHour(startTs)) {
+    return (
+      <img
+        className="w-[160px]"
+        src={`${apiHost}api/events/${eventId}/thumbnail.jpg`}
+      />
+    );
   } else {
     return (
       <>
@@ -223,16 +214,25 @@ function PreviewContent({
               controls: false,
               muted: true,
               loadingSpinner: false,
-              sources: [
-                {
-                  src: `${relevantPreview.src}`,
-                  type: "video/mp4",
-                },
-              ],
+              poster: relevantPreview
+                ? ""
+                : `${apiHost}api/preview/${camera}/${startTs}/thumbnail.jpg`,
+              sources: relevantPreview
+                ? [
+                    {
+                      src: `${relevantPreview.src}`,
+                      type: "video/mp4",
+                    },
+                  ]
+                : [],
             }}
             seekOptions={{}}
             onReady={(player) => {
               playerRef.current = player;
+
+              if (!relevantPreview) {
+                return;
+              }
 
               if (!isInitiallyVisible) {
                 player.pause(); // autoplay + pause is required for iOS
@@ -249,7 +249,9 @@ function PreviewContent({
             }}
           />
         </div>
-        <LuPlayCircle className="absolute z-10 left-1 bottom-1 w-4 h-4 text-white text-opacity-60" />
+        {relevantPreview && (
+          <LuPlayCircle className="absolute z-10 left-1 bottom-1 w-4 h-4 text-white text-opacity-60" />
+        )}
       </>
     );
   }
@@ -259,18 +261,4 @@ function isCurrentHour(timestamp: number) {
   const now = new Date();
   now.setMinutes(0, 0, 0);
   return timestamp > now.getTime() / 1000;
-}
-
-function getPreviewWidth(camera: string, config: FrigateConfig) {
-  const detect = config.cameras[camera].detect;
-
-  if (detect.width / detect.height < 1) {
-    return "w-1/2";
-  }
-
-  if (detect.width / detect.height < 16 / 9) {
-    return "w-2/3";
-  }
-
-  return "w-full";
 }
