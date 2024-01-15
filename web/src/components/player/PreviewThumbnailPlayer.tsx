@@ -10,6 +10,7 @@ import { useApiHost } from "@/api";
 import Player from "video.js/dist/types/player";
 import { AspectRatio } from "../ui/aspect-ratio";
 import { LuPlayCircle } from "react-icons/lu";
+import { isCurrentHour } from "@/utils/dateUtil";
 
 type PreviewPlayerProps = {
   camera: string;
@@ -249,10 +250,4 @@ function PreviewContent({
       </>
     );
   }
-}
-
-function isCurrentHour(timestamp: number) {
-  const now = new Date();
-  now.setMinutes(0, 0, 0);
-  return timestamp > now.getTime() / 1000;
 }
