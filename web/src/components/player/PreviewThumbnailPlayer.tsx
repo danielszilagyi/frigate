@@ -103,6 +103,7 @@ export default function PreviewThumbnailPlayer({
             {
               threshold: 1.0,
               root: document.getElementById("pageRoot"),
+              rootMargin: "-15% 0px -15% 0px",
             }
           );
           if (node) autoPlayObserver.current.observe(node);
