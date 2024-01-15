@@ -1,6 +1,4 @@
-import { FrigateConfig } from "@/types/frigateConfig";
 import VideoPlayer from "./VideoPlayer";
-import useSWR from "swr";
 import React, {
   useCallback,
   useEffect,
@@ -38,7 +36,6 @@ export default function PreviewThumbnailPlayer({
   isMobile,
   onClick,
 }: PreviewPlayerProps) {
-  const { data: config } = useSWR("config");
   const playerRef = useRef<Player | null>(null);
   const isSafari = useMemo(() => {
     return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -131,7 +128,6 @@ export default function PreviewThumbnailPlayer({
         isInitiallyVisible={isInitiallyVisible}
         startTs={startTs}
         camera={camera}
-        config={config}
         eventId={eventId}
         isMobile={isMobile}
         isSafari={isSafari}
@@ -143,7 +139,6 @@ export default function PreviewThumbnailPlayer({
 
 type PreviewContentProps = {
   playerRef: React.MutableRefObject<Player | null>;
-  config: FrigateConfig;
   camera: string;
   relevantPreview: Preview | undefined;
   eventId: string;
@@ -156,7 +151,6 @@ type PreviewContentProps = {
 };
 function PreviewContent({
   playerRef,
-  config,
   camera,
   relevantPreview,
   eventId,
