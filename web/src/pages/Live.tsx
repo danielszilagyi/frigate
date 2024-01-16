@@ -37,12 +37,6 @@ function Live() {
     );
   }, [config]);
   const restreamEnabled = useMemo(() => {
-    console.log(
-      "birdseye has " +
-        Object.keys(config?.go2rtc.streams || {}).includes(
-          cameraConfig?.live.stream_name || ""
-        )
-    );
     return (
       config &&
       cameraConfig &&
@@ -54,7 +48,7 @@ function Live() {
   const defaultLiveMode = useMemo(() => {
     if (cameraConfig) {
       if (restreamEnabled) {
-        return cameraConfig.ui.live_mode;
+        return cameraConfig.ui.live_mode || config?.ui.live_mode;
       }
 
       return "jsmpeg";
